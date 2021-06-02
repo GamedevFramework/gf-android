@@ -3,12 +3,7 @@
 SOURCE_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 
 source "$SOURCE_DIR/targets.sh"
-
-# Function to print an error message and exit
-function die() {
-  echo "$1" >&2
-  exit 1
-}
+source "$SOURCE_DIR/functions.sh"
 
 # Check arguments
 if [ $# -ne 1 ]
@@ -26,8 +21,6 @@ SDL_DIR="$SOURCE_DIR/src/sdl"
 if [ ! -d "$SDL_DIR" ]
 then
   git clone --depth 1 --branch release-2.0.9 https://github.com/libsdl-org/SDL.git "$SDL_DIR"
-else
-  git -C "$SDL_DIR" pull
 fi
 
 for TARGET in $ARCH_TARGETS
