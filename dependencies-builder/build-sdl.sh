@@ -43,7 +43,7 @@ do
     -B "$BUILD_DIR" || die "CMake configuration for $TARGET failed"
 
   # Build project
-  cmake --build "$BUILD_DIR" --parallel $(nbproc --all) || die "Build for $TARGET failed"
+  cmake --build "$BUILD_DIR" --parallel $(nproc --all) || die "Build for $TARGET failed"
 
   # Export libraries
   cmake --install "$BUILD_DIR" || die "Install for $TARGET failed"
