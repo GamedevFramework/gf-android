@@ -1,0 +1,2 @@
+rootProject.name = "GfDemo"
+include ':app'
