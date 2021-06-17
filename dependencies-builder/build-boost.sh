@@ -5,16 +5,10 @@ SOURCE_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 source "$SOURCE_DIR/targets.sh"
 source "$SOURCE_DIR/functions.sh"
 
-# Check arguments
-if [ $# -ne 1 ]
-then
-  echo "Missing arguments" >&2
-  echo "Usage:" >&2
-  echo -e "\t$0 NDK_DIR" >&2
 
-  exit 1
-fi
-NDK_DIR=$1
+# Check arguments
+check_args "$@"
+
 BOOST_DIR="$SOURCE_DIR/src/boost"
 
 # Clone boost repository
@@ -29,24 +23,28 @@ do
   "arm64-v8a")
     EXEC_PREFIX="aarch64"
     unset EXEC_SUFFIX
+    unset EXEC_CLANG_SUFFIX
     ARCH="architecture=arm"
   ;;
 
   "armeabi-v7a")
     EXEC_PREFIX="arm"
     EXEC_SUFFIX="eabi"
+    EXEC_CLANG_SUFFIX="v7a"
     ARCH="architecture=arm"
   ;;
 
   "x86")
     EXEC_PREFIX="i686"
     unset EXEC_SUFFIX
+    unset EXEC_CLANG_SUFFIX
     unset ARCH
   ;;
 
   "x86_64")
     EXEC_PREFIX="x86_64"
     unset EXEC_SUFFIX
+    unset EXEC_CLANG_SUFFIX
     unset ARCH
   ;;
   esac
@@ -62,11 +60,13 @@ do
   echo "import os ;" > $TOOLSET_FILE
   echo "using clang : android" >> $TOOLSET_FILE
   echo ":" >> $TOOLSET_FILE
-  echo "\"$TOOLCHAIN_PATH/clang++\"" >> $TOOLSET_FILE
+  echo "\"$TOOLCHAIN_PATH/$EXEC_PREFIX$EXEC_CLANG_SUFFIX-linux-android$EXEC_SUFFIX$ANDROID_API-clang++\"" >> $TOOLSET_FILE
   echo ":" >> $TOOLSET_FILE
   echo "<archiver>$TOOLCHAIN_PATH/$EXEC_PREFIX-linux-android$EXEC_SUFFIX-ar" >> $TOOLSET_FILE
   echo "<ranlib>$TOOLCHAIN_PATH/$EXEC_PREFIX-linux-android$EXEC_SUFFIX-ranlib" >> $TOOLSET_FILE
   echo ";" >> $TOOLSET_FILE
+
+  echo $TOOLSET_FILE
 
   cd $BOOST_DIR
 
